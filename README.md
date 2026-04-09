@@ -1,24 +1,47 @@
-# README
+# Sick Stuff Shop
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails 8 e-commerce application with auto-deployment to VPS using Kamal.
 
-Things you may want to cover:
+## Tech Stack
 
-* Ruby version
+- **Framework**: Rails 8.1.1
+- **Ruby Version**: 3.3.4
+- **Database**: SQLite3
+- **Frontend**: React with Inertia.js
+- **Deployment**: Kamal to VPS (213.134.31.142)
+- **Container Registry**: GitHub Container Registry (ghcr.io)
+- **CI/CD**: GitHub Actions
 
-* System dependencies
+## Development Setup
 
-* Configuration
+```bash
+# Install dependencies
+bundle install
+npm install
 
-* Database creation
+# Setup database
+bin/rails db:setup
 
-* Database initialization
+# Start development server
+bin/dev
+```
 
-* How to run the test suite
+## Deployment
 
-* Services (job queues, cache servers, search engines, etc.)
+The application automatically deploys to VPS on every push to the `main` branch via GitHub Actions.
 
-* Deployment instructions
+### Manual Deployment
 
-* ...
+```bash
+# Deploy to production
+bin/kamal deploy
+
+# Other useful commands
+bin/kamal app logs    # View application logs
+bin/kamal console     # Access Rails console
+bin/kamal shell       # SSH into the container
+```
+
+## Production URL
+
+After deployment, the application will be accessible at: `http://213.134.31.142`
