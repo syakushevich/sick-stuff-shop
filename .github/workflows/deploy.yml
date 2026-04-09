@@ -37,10 +37,13 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: 'placeholder'
+          known_hosts: 'unnecessary'
+          if_key_exists: replace
 
       - name: Add VPS to known hosts
-        run: ssh-keyscan -H 213.134.31.142 >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan 213.134.31.142 >> ~/.ssh/known_hosts 2>/dev/null
 
       - name: Deploy with Kamal
         env:
