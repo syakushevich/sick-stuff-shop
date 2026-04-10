@@ -13,11 +13,11 @@ servers:
   #     - 192.168.0.1
   #   cmd: bin/jobs
 
-# Enable proxy to allow for multiple apps on a single web server.
-# If you have a domain, configure it here with SSL.
-# For now, using IP address without SSL.
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+# Using SSL requires turning on config.assume_ssl and config.force_ssl in production.rb
 proxy:
-  host: sick-stuff.213.134.31.142.sslip.io
+  ssl: true
+  host: sickstuff.shop
 
 # Where you keep your container images.
 registry:
@@ -32,6 +32,8 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - ADMIN_USERNAME
+    - ADMIN_PASSWORD
   clear:
     # Set number of cores available to the application on each server (default: 1).
     WEB_CONCURRENCY: 2

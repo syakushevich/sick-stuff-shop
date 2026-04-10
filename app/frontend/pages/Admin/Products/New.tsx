@@ -2,15 +2,7 @@ import { useForm, Link, router } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../../components/AdminLayout'
 
-interface Admin {
-  email: string
-}
-
-interface Props {
-  admin: Admin
-}
-
-export default function AdminProductsNew({ admin }: Props) {
+export default function AdminProductsNew() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const { data, setData, processing } = useForm({
     name: '',
@@ -48,7 +40,7 @@ export default function AdminProductsNew({ admin }: Props) {
   }
 
   return (
-    <AdminLayout admin={admin}>
+    <AdminLayout>
       <div className="mb-6">
         <Link href="/admin/products" className="text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

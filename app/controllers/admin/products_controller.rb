@@ -1,20 +1,17 @@
 module Admin
   class ProductsController < BaseController
-    before_action :set_product, only: [:edit, :update, :destroy]
+    before_action :set_product, only: [ :edit, :update, :destroy, :reorder_images ]
 
     def index
       products = Product.all.order(created_at: :desc).map { |product| product_json(product) }
 
       render inertia: "Admin/Products/Index", props: {
-        products: products,
-        admin: admin_json
+        products: products
       }
     end
 
     def new
-      render inertia: "Admin/Products/New", props: {
-        admin: admin_json
-      }
+      render inertia: "Admin/Products/New"
     end
 
     def create
@@ -30,8 +27,7 @@ module Admin
 
     def edit
       render inertia: "Admin/Products/Edit", props: {
-        product: product_json(@product, include_images: true),
-        admin: admin_json
+        product: product_json(@product, include_images: true)
       }
     end
 
@@ -53,6 +49,21 @@ module Admin
       end
     end
 
+    def reorder_images
+      image_order = params[:image_order] || []
+
+      # Reorder images by changing their position
+      image_order.each_with_index do |image_id, index|
+        attachment = @product.images.find_by(id: image_id)
+        if attachment
+          # Update position in the attachment record
+          ActiveStorage::Attachment.where(id: attachment.id).update_all(position: index)
+        end
+      end
+
+      head :ok
+    end
+
     private
 
     def set_product
@@ -64,8 +75,18 @@ module Admin
     end
 
     def attach_images(product)
-      Array(params[:images]).each do |image|
-        product.images.attach(image)
+      current_max_position = product.images.maximum(:position) || -1
+
+      Array(params[:images]).each_with_index do |image, index|
+        attachment = product.images.attach(image)
+        # Set position for the newly attached image
+        if attachment.is_a?(Array)
+          attachment.each_with_index do |att, i|
+            ActiveStorage::Attachment.where(id: att.id).update_all(position: current_max_position + index + i + 1)
+          end
+        else
+          ActiveStorage::Attachment.where(id: attachment.id).update_all(position: current_max_position + index + 1)
+        end
       end
     end
 
@@ -85,23 +106,19 @@ module Admin
       }
 
       if include_images
-        json[:images] = product.images.map do |image|
+        json[:images] = product.images.order(position: :asc, created_at: :asc).map do |image|
           {
             id: image.id,
-            url: Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+            url: Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true),
+            position: image.position || 0
           }
         end
       else
-        json[:imageUrl] = product.images.first ? Rails.application.routes.url_helpers.rails_blob_path(product.images.first, only_path: true) : nil
+        first_image = product.images.order(position: :asc, created_at: :asc).first
+        json[:imageUrl] = first_image ? Rails.application.routes.url_helpers.rails_blob_path(first_image, only_path: true) : nil
       end
 
       json
-    end
-
-    def admin_json
-      {
-        email: current_admin.email
-      }
     end
   end
 end

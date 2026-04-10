@@ -10,16 +10,11 @@ interface Product {
   createdAt: string
 }
 
-interface Admin {
-  email: string
-}
-
 interface Props {
   products: Product[]
-  admin: Admin
 }
 
-export default function AdminProductsIndex({ products, admin }: Props) {
+export default function AdminProductsIndex({ products }: Props) {
   const handleDelete = (product: Product) => {
     if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
       router.delete(`/admin/products/${product.id}`)
@@ -27,7 +22,7 @@ export default function AdminProductsIndex({ products, admin }: Props) {
   }
 
   return (
-    <AdminLayout admin={admin}>
+    <AdminLayout>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
         <Link

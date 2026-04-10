@@ -6,30 +6,30 @@ Rails.application.routes.draw do
 
   # Public routes
   root "products#index"
-  resources :products, only: [:index, :show]
+  resources :products, only: [ :index, :show ]
 
   # Cart routes
-  resource :cart, only: [:show] do
+  resource :cart, only: [ :show ] do
     post :add
     patch :update
     delete :remove
   end
 
   # Checkout routes
-  resource :checkout, only: [:show, :create]
+  resource :checkout, only: [ :show, :create ]
 
   # Admin routes
   namespace :admin do
-    root "products#index"
-
-    # Admin authentication
-    get "login", to: "sessions#new"
-    post "login", to: "sessions#create"
-    delete "logout", to: "sessions#destroy"
+    root "dashboard#index"
 
     # Admin resources
-    resources :products
-    resources :orders, only: [:index, :show, :update]
+    get "dashboard", to: "dashboard#index"
+    resources :products do
+      member do
+        patch :reorder_images
+      end
+    end
+    resources :orders, only: [ :index, :show, :update ]
   end
 
   # Health check

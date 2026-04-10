@@ -32,7 +32,7 @@ const statusColors: Record<string, string> = {
 
 export default function AdminOrdersIndex({ orders, statuses, admin }: Props) {
   return (
-    <AdminLayout admin={admin}>
+    <AdminLayout>
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Orders</h1>
 
       {orders.length === 0 ? (
