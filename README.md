@@ -44,4 +44,8 @@ bin/kamal shell       # SSH into the container
 
 ## Production URL
 
-After deployment, the application will be accessible at: `http://213.134.31.142`
+The application is deployed at:
+- **Primary**: https://sickstuff.shop
+- **Alternate**: https://www.sickstuff.shop
+
+The application uses Let's Encrypt for automatic SSL certificate provisioning and renewal.
